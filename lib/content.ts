@@ -1,180 +1,226 @@
+/**
+ * All copy and photo choices for the site live here.
+ * Edit this file to change names, dates, venue details, etc.
+ */
+
 export const wedding = {
   partnerA: "Jasmine",
   partnerB: "Jon",
   tagline: "We're getting married",
+  /** ISO date-time of the ceremony, in the venue's local time. */
+  dateISO: "2026-10-10T16:30:00-05:00",
   date: "Saturday, October 10, 2026",
   dateShort: "10.10.26",
+  together: { since: 2017 },
   venue: {
     name: "Skyline Conservatory",
+    city: "Austin, Texas",
     address: "1200 Garden Lane, Austin, TX 78701",
-    mapsUrl: "https://maps.google.com/?q=Austin+TX",
+    mapsUrl: "https://maps.google.com/?q=1200+Garden+Lane+Austin+TX+78701",
   },
-  heroCta: "Scroll the story",
 } as const;
 
 export const images = {
-  hero: "/images/couple/hero.jpg",
-  /** Face crop sources for balloon basket (object-position set in BalloonScene). */
-  jon: "/images/couple/hero.jpg",
-  partner: "/images/couple/hero.jpg",
-  portrait: "/images/couple/portrait.jpg",
-  balloon: "/images/props/balloon.png",
-  sole: "/images/props/sole.svg",
-  shoes: "/images/props/shoes.svg",
+  hero: "/images/years/2025/007.jpg",
+  balloon: "/images/props/balloon-hearts.webp",
 } as const;
 
-export const storyChapters = [
+/**
+ * "Snippets" — the tap-through story reel.
+ * Each item can be a photo or a video clip. To add a clip, drop an .mp4 into
+ * public/videos/ and add: { type: "video", src: "/videos/clip.mp4", poster: "/images/…jpg", … }
+ */
+export type Snippet = {
+  type: "image" | "video";
+  src: string;
+  poster?: string;
+  year: string;
+  title: string;
+  caption: string;
+  /** CSS object-position for the crop on tall phone screens. */
+  focus?: string;
+};
+
+export const snippets: Snippet[] = [
   {
-    src: "/images/story/01.jpg",
+    type: "image",
+    src: "/images/years/2017/009.jpg",
     year: "2017",
-    caption: "Where it started — two goofs, one frame.",
+    title: "Where it started",
+    caption: "Two goofs, one frame, zero idea what was coming.",
   },
   {
-    src: "/images/story/03.jpg",
+    type: "image",
+    src: "/images/years/2018/030.jpg",
     year: "2018",
-    caption: "Adventures, snacks, and zero chill.",
+    title: "Prom, obviously",
+    caption: "Corsage pinned, dad jokes deployed, hearts fully committed.",
   },
   {
-    src: "/images/story/05.jpg",
+    type: "image",
+    src: "/images/years/2019/009.jpg",
     year: "2019",
+    title: "Snow days",
     caption: "Still figuring it out. Still choosing each other.",
   },
   {
-    src: "/images/story/07.jpg",
+    type: "image",
+    src: "/images/years/2021/011.jpg",
     year: "2021",
-    caption: "Home base, couch laughs, orange cat tax.",
+    title: "Tractor era",
+    caption: "Apple picking, flannel season, and one very red tractor.",
   },
   {
-    src: "/images/story/08.jpg",
+    type: "image",
+    src: "/images/years/2022/008.jpg",
     year: "2022",
-    caption: "Bigger trips. Same silly faces.",
+    title: "Caps in the air",
+    caption: "Graduated together. Celebrated louder.",
   },
   {
-    src: "/images/story/10.jpg",
+    type: "image",
+    src: "/images/years/2023/025.jpg",
     year: "2023",
-    caption: "Dressed up, showing up, growing up — together.",
+    title: "Big trips",
+    caption: "New cities, same silly faces.",
   },
   {
-    src: "/images/story/13.jpg",
+    type: "image",
+    src: "/images/years/2024/003.jpg",
     year: "2024",
-    caption: "Streetwear dates and shoe piles by the door.",
+    title: "Swept off her feet",
+    caption: "Literally. Sunset optional, piggyback mandatory.",
+    focus: "45% center",
   },
   {
-    src: "/images/story/15.jpg",
-    year: "2026",
-    caption: "Said yes. Now we float.",
+    type: "image",
+    src: "/images/years/2025/007.jpg",
+    year: "2025",
+    title: "A sky full of lanterns",
+    caption: "Wishes sent up. Most of them about each other.",
   },
+  {
+    type: "image",
+    src: "/images/years/2026/011.jpg",
+    year: "2026",
+    title: "Up, up, and away",
+    caption: "A hot air balloon. A question. A very loud yes.",
+  },
+  {
+    type: "image",
+    src: "/images/years/2026/015.jpg",
+    year: "2026",
+    title: "Said yes",
+    caption: "Now we float.",
+  },
+];
+
+export const stats = [
+  { value: 2026 - wedding.together.since, suffix: "", label: "years together" },
+  { value: 191, suffix: "", label: "photos below" },
+  { value: 1, suffix: "", label: "hot air balloon" },
+  { value: 1, suffix: "", label: "very loud yes" },
 ] as const;
 
-export const photoCascade = [
-  "/images/story/02.jpg",
-  "/images/story/04.jpg",
-  "/images/story/06.jpg",
-  "/images/story/09.jpg",
-  "/images/story/11.jpg",
-  "/images/story/12.jpg",
-  "/images/story/14.jpg",
-  "/images/story/16.jpg",
-  "/images/story/17.jpg",
-  "/images/story/18.jpg",
-  "/images/couple/portrait.jpg",
-  "/images/couple/hero.jpg",
+/** Places we've been together — scrolls across the "Places" band. */
+export const places = [
+  "Thailand",
+  "Binghamton",
+  "Bayside",
+  "Florida",
+  "Upstate New York",
+  "Washington",
+  "Rhode Island",
+] as const;
+
+export const rotatingWords = [
+  "adventures",
+  "bad selfies",
+  "road trips",
+  "late-night snacks",
+  "choosing each other",
 ] as const;
 
 export const photoBreaks = {
-  afterParking: "/images/story/09.jpg",
-  afterSchedule: "/images/story/11.jpg",
-  afterParty: "/images/story/16.jpg",
-  afterDress: "/images/story/17.jpg",
+  afterSchedule: {
+    src: "/images/years/2026/010.jpg",
+    caption: "Said yes. Now we float.",
+  },
+  afterTravel: {
+    src: "/images/years/2023/012.jpg",
+    caption: "Gifts optional. Dancing mandatory.",
+  },
+  afterDress: {
+    src: "/images/years/2026/018.jpg",
+    caption: "Come as you are — comfy shoes welcome.",
+  },
 } as const;
 
 export const navLinks = [
-  { href: "#story", label: "Our Story" },
-  { href: "#photos", label: "Photos" },
-  { href: "#parking", label: "Parking" },
-  { href: "#schedule", label: "Schedule" },
-  { href: "#party", label: "Party" },
-  { href: "#registry", label: "Registry" },
-  { href: "#dress-code", label: "Dress" },
-  { href: "#kids", label: "Kids" },
+  { href: "/#story", label: "Our Story" },
+  { href: "/#photos", label: "Photos" },
+  { href: "/#schedule", label: "Schedule" },
+  { href: "/#travel", label: "Travel" },
+  { href: "/#dress-code", label: "Dress Code" },
+  { href: "/#faq", label: "FAQ" },
 ] as const;
 
-export const parking = {
-  title: "Parking & Directions",
-  lead: "Getting there is easy — a few notes so arrival feels calm.",
+export const travel = {
+  title: "Getting there",
+  lead: "Easy to find, easier to stay. A few notes so arrival feels calm.",
   directions:
     "From downtown, take Cesar Chavez east and follow signs for Garden Lane. Rideshare drop-off is at the conservatory porte-cochère.",
   parkingNotes: [
-    "Complimentary self-parking in Lot B (enter from Willow Street).",
-    "Valet available at the main entrance from 3:00 PM.",
-    "Accessible spaces are marked near the east doors.",
+    { title: "Self-parking", body: "Complimentary in Lot B — enter from Willow Street." },
+    { title: "Valet", body: "Available at the main entrance from 3:00 PM." },
+    { title: "Accessible", body: "Reserved spaces are marked near the east doors." },
   ],
 };
 
 export const schedule = {
-  title: "Schedule",
-  lead: "A day of ceremony, dinner, and dancing under the sky.",
+  title: "The big day",
+  lead: "Ceremony, dinner, and dancing under the sky.",
   items: [
-    {
-      time: "4:00 PM",
-      title: "Guest arrival",
-      detail: "Drinks and lawn games on the terrace.",
-    },
-    {
-      time: "4:30 PM",
-      title: "Ceremony",
-      detail: "Under the conservatory dome.",
-    },
-    {
-      time: "5:15 PM",
-      title: "Cocktail hour",
-      detail: "Garden courtyard — photos welcome.",
-    },
-    {
-      time: "6:30 PM",
-      title: "Dinner",
-      detail: "Seated dinner in the great hall.",
-    },
+    { time: "4:00 PM", title: "Guest arrival", detail: "Drinks and lawn games on the terrace." },
+    { time: "4:30 PM", title: "Ceremony", detail: "Under the conservatory dome." },
+    { time: "5:15 PM", title: "Cocktail hour", detail: "Garden courtyard — photos welcome." },
+    { time: "6:30 PM", title: "Dinner", detail: "Seated dinner in the great hall." },
     { time: "8:00 PM", title: "Dancing", detail: "Open floor until late." },
   ],
 };
 
-export const bridalParty = {
-  title: "Bridal Party",
-  lead: "The people who keep us laughing — and keep the shoes from running too far.",
-  people: [
-    { name: "Sam Rivera", role: "Maid of Honor", photo: "/images/party/1.jpg" },
-    { name: "Chris Patel", role: "Best Man", photo: "/images/party/2.jpg" },
-    { name: "Jordan Lee", role: "Bridesmaid", photo: "/images/party/3.jpg" },
-    { name: "Taylor Brooks", role: "Groomsman", photo: "/images/party/4.jpg" },
-    { name: "Riley Quinn", role: "Bridesmaid", photo: "/images/party/5.jpg" },
-    { name: "Morgan Ellis", role: "Groomsman", photo: "/images/party/6.jpg" },
-  ],
-};
-
-export const registry = {
-  title: "Registry",
-  lead: "Your presence is the gift. If you’d like to contribute, here are a few places we’ve registered.",
-  links: [
-    { label: "Honeymoon fund", href: "https://example.com/honeymoon" },
-    { label: "Home essentials", href: "https://example.com/registry" },
-  ],
-};
-
 export const dressCode = {
-  title: "Dress Code",
+  title: "Dress code",
   lead: "Garden formal — think polished, with room to dance.",
+  palette: [
+    { name: "Dusk blue", hex: "#5b7aa6" },
+    { name: "Lantern gold", hex: "#e2b25c" },
+    { name: "Balloon rose", hex: "#d4506d" },
+    { name: "Sage", hex: "#9bae92" },
+    { name: "Champagne", hex: "#efe2c8" },
+  ],
   details: [
     "Suits, cocktail dresses, or dressy separates.",
     "Soft florals and sky blues feel right for the conservatory.",
-    "Comfortable shoes encouraged — the lawn is soft, and the sole may chase you.",
+    "Comfortable shoes encouraged — the lawn is soft and the dance floor runs late.",
   ],
 };
 
-export const kidsPlusOne = {
-  title: "Kids & Plus Ones",
-  lead: "We kept the guest list intentional so everyone we love can celebrate fully.",
-  kids: "We’re keeping the celebration adults-only (16+), with a quiet nursing/parent room available if needed.",
-  plusOnes:
-    "Plus ones are included when named on your invitation. If you’re unsure, check the envelope or message us.",
-};
+export const faq = [
+  {
+    q: "Can I bring my kids?",
+    a: "We’re keeping the celebration adults-only (16+), with a quiet nursing/parent room available if needed.",
+  },
+  {
+    q: "Can I bring a plus one?",
+    a: "Plus ones are included when named on your invitation. If you’re unsure, check the envelope or message us.",
+  },
+  {
+    q: "Is the venue indoors or outdoors?",
+    a: "Both! The ceremony is under the glass conservatory dome; cocktail hour spills out into the garden.",
+  },
+  {
+    q: "Can I take photos?",
+    a: "During the ceremony, we’d love an unplugged moment. After that — snap away and send us everything.",
+  },
+];

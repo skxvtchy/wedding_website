@@ -1,51 +1,35 @@
+import { BalloonSky } from "@/components/BalloonSky";
+import { Countdown } from "@/components/Countdown";
+import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
+import { Marquee } from "@/components/Marquee";
 import { Nav } from "@/components/Nav";
 import { PhotoBreak } from "@/components/PhotoBreak";
-import { PhotoCascade } from "@/components/PhotoCascade";
-import { PhotoJourney } from "@/components/PhotoJourney";
-import { Sections } from "@/components/Sections";
-import { ShoeChase } from "@/components/ShoeChase";
+import { DressCode, Faq, Schedule, Travel } from "@/components/Sections";
+import { StoryReel } from "@/components/StoryReel";
+import { YearsGallery } from "@/components/YearsGallery";
 import { photoBreaks } from "@/lib/content";
 
 export default function Home() {
   return (
     <>
       <Nav />
+      <BalloonSky />
       <main className="flex-1">
         <Hero />
-        <PhotoJourney />
-        <PhotoCascade />
-        <Sections
-          breaks={{
-            afterParking: (
-              <PhotoBreak
-                src={photoBreaks.afterParking}
-                caption="Next stop: the big day details."
-              />
-            ),
-            afterSchedule: (
-              <PhotoBreak
-                src={photoBreaks.afterSchedule}
-                caption="Meet the chaos crew."
-                tall
-              />
-            ),
-            afterParty: (
-              <PhotoBreak
-                src={photoBreaks.afterParty}
-                caption="Gifts optional. Dancing mandatory."
-              />
-            ),
-            afterDress: (
-              <PhotoBreak
-                src={photoBreaks.afterDress}
-                caption="Come as you are — comfy shoes welcome."
-              />
-            ),
-          }}
-        />
+        <Countdown />
+        <StoryReel />
+        <Marquee />
+        <YearsGallery />
+        <Schedule />
+        <PhotoBreak {...photoBreaks.afterSchedule} position="center 60%" />
+        <Travel />
+        <PhotoBreak {...photoBreaks.afterTravel} />
+        <DressCode />
+        <PhotoBreak {...photoBreaks.afterDress} />
+        <Faq />
       </main>
-      <ShoeChase />
+      <Footer />
     </>
   );
 }
