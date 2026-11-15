@@ -1,6 +1,6 @@
 export const wedding = {
-  partnerA: "Jon",
-  partnerB: "Alex",
+  partnerA: "Jasmine",
+  partnerB: "Jon",
   tagline: "We're getting married",
   date: "Saturday, October 10, 2026",
   dateShort: "10.10.26",

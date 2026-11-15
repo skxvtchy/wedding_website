@@ -3,11 +3,13 @@
 import Image from "next/image";
 import {
   motion,
+  useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useTransform,
+  type MotionValue,
 } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { storyChapters, wedding } from "@/lib/content";
 
 export function PhotoJourney() {
@@ -18,24 +20,9 @@ export function PhotoJourney() {
     offset: ["start start", "end end"],
   });
 
-  const activeIndex = useTransform(scrollYProgress, (v) => {
-    const i = Math.min(
-      storyChapters.length - 1,
-      Math.floor(v * storyChapters.length),
-    );
-    return i;
-  });
-
   return (
-    <section id="story" ref={ref} className="relative bg-ink">
-      <div
-        className="h-[calc(var(--chapters)*85vh)]"
-        style={
-          {
-            "--chapters": storyChapters.length,
-          } as React.CSSProperties
-        }
-      >
+    <section id="story" ref={ref} className="relative scroll-mt-24 bg-ink">
+      <div style={{ height: `${storyChapters.length * 85}vh` }}>
         <div className="sticky top-0 h-svh overflow-hidden">
           {storyChapters.map((chapter, i) => (
             <ChapterSlide
@@ -48,14 +35,14 @@ export function PhotoJourney() {
             />
           ))}
 
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent px-5 pb-10 pt-24 md:px-10">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent px-5 pb-10 pt-28 md:px-10">
             <p className="text-xs uppercase tracking-[0.3em] text-paper/60">
               Our story
             </p>
-            <ActiveCaption activeIndex={activeIndex} />
+            <ActiveCaption progress={scrollYProgress} />
             <p className="mt-4 max-w-md text-sm text-paper/55">
-              Scroll to float through the years with {wedding.partnerA} &{" "}
-              {wedding.partnerB}.
+              Keep scrolling to float through the years with {wedding.partnerA}{" "}
+              & {wedding.partnerB}.
             </p>
           </div>
 
@@ -64,7 +51,7 @@ export function PhotoJourney() {
             aria-hidden
           >
             {storyChapters.map((chapter, i) => (
-              <Dot key={chapter.year} index={i} progress={scrollYProgress} />
+              <Dot key={chapter.year + i} index={i} progress={scrollYProgress} />
             ))}
           </div>
         </div>
@@ -83,27 +70,24 @@ function ChapterSlide({
   chapter: (typeof storyChapters)[number];
   index: number;
   total: number;
-  progress: ReturnType<typeof useScroll>["scrollYProgress"];
+  progress: MotionValue<number>;
   reduceMotion: boolean;
 }) {
   const start = index / total;
   const end = (index + 1) / total;
   const opacity = useTransform(
     progress,
-    [start - 0.04, start + 0.02, end - 0.02, end + 0.04],
-    [0, 1, 1, 0],
+    [Math.max(0, start - 0.05), start + 0.03, end - 0.03, Math.min(1, end + 0.05)],
+    index === 0 ? [1, 1, 1, 0] : index === total - 1 ? [0, 1, 1, 1] : [0, 1, 1, 0],
   );
   const scale = useTransform(
     progress,
     [start, end],
-    reduceMotion ? [1, 1] : [1.08, 1],
+    reduceMotion ? [1, 1] : [1.1, 1],
   );
 
   return (
-    <motion.div
-      style={{ opacity, scale }}
-      className="absolute inset-0"
-    >
+    <motion.div style={{ opacity, scale }} className="absolute inset-0 will-change-transform">
       <Image
         src={chapter.src}
         alt={`${chapter.year}: ${chapter.caption}`}
@@ -112,49 +96,33 @@ function ChapterSlide({
         sizes="100vw"
         className="object-cover"
       />
-      <div className="absolute inset-0 bg-ink/25" />
+      <div className="absolute inset-0 bg-ink/20" />
     </motion.div>
   );
 }
 
-function ActiveCaption({
-  activeIndex,
-}: {
-  activeIndex: ReturnType<typeof useTransform<number, number>>;
-}) {
-  return (
-    <motion.div className="mt-3">
-      {storyChapters.map((chapter, i) => (
-        <CaptionLine key={chapter.src} chapter={chapter} index={i} activeIndex={activeIndex} />
-      ))}
-    </motion.div>
-  );
-}
+function ActiveCaption({ progress }: { progress: MotionValue<number> }) {
+  const [index, setIndex] = useState(0);
 
-function CaptionLine({
-  chapter,
-  index,
-  activeIndex,
-}: {
-  chapter: (typeof storyChapters)[number];
-  index: number;
-  activeIndex: ReturnType<typeof useTransform<number, number>>;
-}) {
-  const opacity = useTransform(activeIndex, (v) => (Math.round(v) === index ? 1 : 0));
-  const y = useTransform(activeIndex, (v) => (Math.round(v) === index ? 0 : 12));
+  useMotionValueEvent(progress, "change", (v) => {
+    const next = Math.min(
+      storyChapters.length - 1,
+      Math.floor(v * storyChapters.length),
+    );
+    setIndex(next);
+  });
+
+  const chapter = storyChapters[index];
 
   return (
-    <motion.div
-      style={{ opacity, y }}
-      className="absolute"
-    >
+    <div className="relative mt-3 min-h-[7.5rem]">
       <p className="font-[family-name:var(--font-display)] text-4xl text-paper md:text-6xl">
         {chapter.year}
       </p>
       <p className="mt-2 max-w-lg text-lg text-paper/85 md:text-xl">
         {chapter.caption}
       </p>
-    </motion.div>
+    </div>
   );
 }
 
@@ -163,13 +131,14 @@ function Dot({
   progress,
 }: {
   index: number;
-  progress: ReturnType<typeof useScroll>["scrollYProgress"];
+  progress: MotionValue<number>;
 }) {
   const total = storyChapters.length;
   const start = index / total;
   const end = (index + 1) / total;
-  const scale = useTransform(progress, [start, (start + end) / 2, end], [1, 1.6, 1]);
-  const opacity = useTransform(progress, [start, (start + end) / 2, end], [0.35, 1, 0.35]);
+  const mid = (start + end) / 2;
+  const scale = useTransform(progress, [start, mid, end], [1, 1.7, 1]);
+  const opacity = useTransform(progress, [start, mid, end], [0.35, 1, 0.35]);
 
   return (
     <motion.span
