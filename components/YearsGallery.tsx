@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useRef, useState } from "react";
 import { allPhotos, photosByYear, years } from "@/lib/allPhotos";
 import { Lightbox } from "./Lightbox";
 import { SectionHeading } from "./SectionHeading";
+import { YearTimeline } from "./YearTimeline";
 
 const PREVIEW = 9;
 
@@ -14,15 +15,21 @@ export function YearsGallery() {
   const [year, setYear] = useState(years[years.length - 1]);
   const [expanded, setExpanded] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const chipsRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
 
-  // Keep the selected year chip in view inside the horizontal scroller.
-  useEffect(() => {
-    const row = chipsRef.current;
-    const chip = row?.querySelector<HTMLElement>(`[data-year="${year}"]`);
-    if (!row || !chip) return;
-    row.scrollTo({ left: chip.offsetLeft - row.clientWidth / 2 + chip.offsetWidth / 2, behavior: "smooth" });
-  }, [year]);
+  const selectYear = (y: string) => {
+    setYear(y);
+    setExpanded(false);
+    // If they've scrolled down into a long year, bring the new year's heading
+    // back into view instead of leaving them stranded mid-grid.
+    const panelTop = panelRef.current?.getBoundingClientRect().top;
+    const barBottom = barRef.current?.getBoundingClientRect().bottom;
+    if (panelTop !== undefined && barBottom !== undefined && panelTop < barBottom - 1) {
+      window.scrollTo({ top: window.scrollY + panelTop - barBottom, behavior: reduceMotion ? "auto" : "smooth" });
+    }
+  };
 
   const photos = photosByYear[year];
   const visible = expanded ? photos : photos.slice(0, PREVIEW);
@@ -37,37 +44,15 @@ export function YearsGallery() {
         />
       </div>
 
-      {/* Year chips — sticky + horizontally scrollable on phones */}
-      <div className="sticky top-16 z-30 mt-10 border-y border-line bg-paper/90 backdrop-blur-xl">
-        <div ref={chipsRef} className="no-scrollbar relative mx-auto flex max-w-6xl snap-x gap-1 overflow-x-auto px-5 py-3 md:px-8">
-          {years.map((y) => (
-            <button
-              key={y}
-              data-year={y}
-              type="button"
-              onClick={() => {
-                setYear(y);
-                setExpanded(false);
-              }}
-              aria-pressed={y === year}
-              className={`relative shrink-0 snap-start rounded-full px-4 py-2 text-sm font-semibold tabular-nums transition-colors ${
-                y === year ? "text-cream" : "text-ink-soft hover:text-ink"
-              }`}
-            >
-              {y === year ? (
-                <motion.span
-                  layoutId="year-pill"
-                  className="absolute inset-0 rounded-full bg-ink"
-                  transition={{ type: "spring", stiffness: 400, damping: 34 }}
-                />
-              ) : null}
-              <span className="relative">{y}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+      <YearTimeline ref={barRef} years={years} year={year} onSelect={selectYear} panelId="years-panel" />
 
-      <div className="mx-auto mt-8 max-w-6xl px-3 md:px-8">
+      <div
+        ref={panelRef}
+        id="years-panel"
+        role="tabpanel"
+        aria-labelledby={`year-tab-${year}`}
+        className="mx-auto max-w-6xl px-3 pt-8 md:px-8"
+      >
         <div className="mb-5 flex items-baseline justify-between px-2 md:px-0">
           <AnimatePresence mode="wait">
             <motion.p
