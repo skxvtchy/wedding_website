@@ -17,6 +17,8 @@ export type CurvedLoopShape = 'arc' | 'wave' | 'circle' | 'line';
 
 interface CurvedLoopProps {
   marqueeText?: string;
+  /** Keep moving even when the OS asks for reduced motion (added). */
+  ignoreReducedMotion?: boolean;
   speed?: number;
   className?: string;
   curveAmount?: number;
@@ -141,7 +143,8 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
   outline = false,
   separator = '',
   separatorColor,
-  scrollBoost = 0
+  scrollBoost = 0,
+  ignoreReducedMotion = false
 }) => {
   const body = useMemo(() => marqueeText.replace(/\s+$/, ''), [marqueeText]);
   const mark = String(separator ?? '').trim();
@@ -260,7 +263,9 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
 
   useEffect(() => {
     if (!ready) return;
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const reduceMotion = ignoreReducedMotion
+      ? false
+      : (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
     let frame = 0;
     let last = 0;
     let visible = true;
@@ -308,7 +313,7 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
       cancelAnimationFrame(frame);
       observer?.disconnect();
     };
-  }, [ready]);
+  }, [ready, ignoreReducedMotion]);
 
   const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
     if (!interactive || !ready) return;

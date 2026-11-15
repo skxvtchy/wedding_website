@@ -13,16 +13,16 @@ export function Schedule() {
         <SectionHeading eyebrow={wedding.date} title={schedule.title} lead={schedule.lead} />
         <ol className="relative mt-12 ml-2 border-l border-line md:ml-0">
           {schedule.items.map((item, i) => (
-            <Reveal key={item.time} delay={i * 0.06}>
-              <li className="relative pb-10 pl-8 last:pb-0 md:grid md:grid-cols-[8rem_1fr] md:gap-8 md:pl-10">
-                <span className="absolute -left-[7px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-cream bg-rose shadow-[0_0_0_4px_var(--blush)]" />
+            <li key={item.time} className="relative pb-10 pl-8 last:pb-0 md:pl-10">
+              <span className="absolute -left-[7px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-cream bg-rose shadow-[0_0_0_4px_var(--blush)]" />
+              <Reveal delay={i * 0.06} className="md:grid md:grid-cols-[8rem_1fr] md:gap-8">
                 <time className="eyebrow block text-rose md:pt-1.5">{item.time}</time>
                 <div>
                   <p className="mt-1 font-display text-2xl text-ink md:mt-0 md:text-3xl">{item.title}</p>
                   <p className="mt-1 text-ink-soft">{item.detail}</p>
                 </div>
-              </li>
-            </Reveal>
+              </Reveal>
+            </li>
           ))}
         </ol>
       </div>
@@ -98,12 +98,12 @@ export function DressCode() {
         </Reveal>
         <ul className="mt-10 space-y-3">
           {dressCode.details.map((line, i) => (
-            <Reveal key={line} delay={0.05 * i}>
-              <li className="flex gap-3 text-ink-soft">
+            <li key={line}>
+              <Reveal delay={0.05 * i} className="flex gap-3 text-ink-soft">
                 <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
                 {line}
-              </li>
-            </Reveal>
+              </Reveal>
+            </li>
           ))}
         </ul>
       </div>

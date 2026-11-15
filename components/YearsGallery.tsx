@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { allPhotos, photosByYear, years } from "@/lib/allPhotos";
 import { Lightbox } from "./Lightbox";
 import { SectionHeading } from "./SectionHeading";
@@ -14,6 +14,15 @@ export function YearsGallery() {
   const [year, setYear] = useState(years[years.length - 1]);
   const [expanded, setExpanded] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const chipsRef = useRef<HTMLDivElement>(null);
+
+  // Keep the selected year chip in view inside the horizontal scroller.
+  useEffect(() => {
+    const row = chipsRef.current;
+    const chip = row?.querySelector<HTMLElement>(`[data-year="${year}"]`);
+    if (!row || !chip) return;
+    row.scrollTo({ left: chip.offsetLeft - row.clientWidth / 2 + chip.offsetWidth / 2, behavior: "smooth" });
+  }, [year]);
 
   const photos = photosByYear[year];
   const visible = expanded ? photos : photos.slice(0, PREVIEW);
@@ -30,10 +39,11 @@ export function YearsGallery() {
 
       {/* Year chips — sticky + horizontally scrollable on phones */}
       <div className="sticky top-16 z-30 mt-10 border-y border-line bg-paper/90 backdrop-blur-xl">
-        <div className="no-scrollbar mx-auto flex max-w-6xl snap-x gap-1 overflow-x-auto px-5 py-3 md:px-8">
+        <div ref={chipsRef} className="no-scrollbar relative mx-auto flex max-w-6xl snap-x gap-1 overflow-x-auto px-5 py-3 md:px-8">
           {years.map((y) => (
             <button
               key={y}
+              data-year={y}
               type="button"
               onClick={() => {
                 setYear(y);

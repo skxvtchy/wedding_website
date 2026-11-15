@@ -31,6 +31,8 @@ export function Marquee() {
             fontWeight={300}
             speed={1.1}
             scrollBoost={1}
+            interactive={false}
+            ignoreReducedMotion
             color="var(--cream)"
             className="font-display italic"
           />
@@ -46,6 +48,8 @@ export function Marquee() {
             speed={0.9}
             direction="right"
             scrollBoost={1}
+            interactive={false}
+            ignoreReducedMotion
             outline
             color="var(--gold)"
             className="font-display italic"
