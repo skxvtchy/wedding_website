@@ -1,301 +1,422 @@
 "use client";
 
 import Image from "next/image";
-import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  AnimatePresence,
+  MotionConfig,
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+} from "motion/react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import RotatingText from "@/components/reactbits/RotatingText";
-import { rotatingWords, snippets, wedding } from "@/lib/content";
+import { rotatingWords, snippets, wedding, type Snippet, type StoryPhoto } from "@/lib/content";
 import { Reveal } from "./Reveal";
 
-const IMAGE_MS = 5200;
+/** How long each photo stays on top of the stack. */
+const PHOTO_MS = 2800;
+
+const isClip = (src: string) => /\.(mp4|mov|webm)$/i.test(src);
+
+// Hydration-safe: the server (and first client render) assume motion is fine.
+const REDUCE_QUERY = "(prefers-reduced-motion: reduce)";
+const subscribeReduced = (onChange: () => void) => {
+  const mq = window.matchMedia(REDUCE_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+const usePrefersReducedMotion = () =>
+  useSyncExternalStore(subscribeReduced, () => window.matchMedia(REDUCE_QUERY).matches, () => false);
+
+/** Resting pose for a card by its depth in the stack (0 = front). */
+const POSES = [
+  { x: 0, y: 0, rotate: -2.5, scale: 1 },
+  { x: 6, y: -1.5, rotate: 5, scale: 0.97 },
+  { x: -6, y: -3, rotate: -7, scale: 0.94 },
+  { x: 3, y: -4.5, rotate: 9, scale: 0.91 },
+  { x: -2, y: -5.5, rotate: -4, scale: 0.88 },
+];
+/** Where the front card flies to before it tucks in at the back. */
+const OUT = { x: 72, y: -8, rotate: 16, scale: 1 };
 
 /**
- * Tap-through "stories" reel. Photos get a slow Ken Burns push so they feel
- * like video; real clips (type: "video") play inline, muted, and advance
- * when they end.
+ * "Our story" as an animated scrapbook: each chapter is a stack of polaroids
+ * that shuffles on its own — the front photo drifts in slowly, flies off,
+ * and tucks in behind — then the next chapter is dealt in.
  */
 export function StoryReel() {
-  const [index, setIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [inView, setInView] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const held = useRef(false);
+  const [chapter, setChapter] = useState(0);
+  const [step, setStep] = useState(0);
+  const [leaving, setLeaving] = useState<number | null>(null);
+  const [playing, setPlaying] = useState<boolean | null>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const inView = useInView(stageRef, { amount: 0.35 });
+  const seen = useInView(stageRef, { amount: 0.2, once: true });
+  const reduceMotion = usePrefersReducedMotion();
+  /** 0 → 1 across the current chapter. */
+  const progress = useMotionValue(0);
 
-  const item = snippets[index];
-  const running = inView && !paused;
+  const item = snippets[chapter];
+  const count = item.photos.length;
+  const isPlaying = playing ?? !reduceMotion;
+  const running = inView && isPlaying;
 
-  const progressRef = useRef(0);
+  const goChapter = useCallback(
+    (i: number) => {
+      clearTimeout(leaveTimer.current);
+      setLeaving(null);
+      setStep(0);
+      setChapter((i + snippets.length) % snippets.length);
+      progress.set(0);
+    },
+    [progress],
+  );
 
-  const go = useCallback((delta: number) => {
-    setIndex((i) => (i + delta + snippets.length) % snippets.length);
-    progressRef.current = 0;
-    setProgress(0);
-  }, []);
-
-  const jump = (i: number) => {
-    setIndex(i);
-    progressRef.current = 0;
-    setProgress(0);
-  };
-
-  // Play only while visible.
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.45 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  // Timer for photos.
-  useEffect(() => {
-    if (item.type !== "image" || !running) return;
-    let raf = 0;
-    let last = performance.now();
-    const tick = (t: number) => {
-      const dt = t - last;
-      last = t;
-      progressRef.current += dt / IMAGE_MS;
-      if (progressRef.current >= 1) {
-        go(1);
-        return;
-      }
-      setProgress(progressRef.current);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [item.type, running, index, go]);
-
-  // Videos follow their own clock.
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v || item.type !== "video") return;
-    if (running) v.play().catch(() => {});
-    else v.pause();
-  }, [running, item.type, index]);
-
-  // Keyboard support when focused.
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowRight") go(1);
-    if (e.key === "ArrowLeft") go(-1);
-    if (e.key === " ") {
-      e.preventDefault();
-      setPaused((p) => !p);
-    }
-  };
-
-  const onPointerDown = () => {
-    held.current = false;
-    holdTimer.current = setTimeout(() => {
-      held.current = true;
-      setPaused(true);
-    }, 220);
-  };
-
-  const onPointerUp = (dir: 1 | -1) => {
-    if (holdTimer.current) clearTimeout(holdTimer.current);
-    if (held.current) {
-      setPaused(false);
+  const next = useCallback(() => {
+    if (step >= count - 1) {
+      goChapter(chapter + 1);
       return;
     }
-    go(dir);
+    setLeaving(step);
+    setStep(step + 1);
+    progress.set((step + 1) / count);
+    clearTimeout(leaveTimer.current);
+    leaveTimer.current = setTimeout(() => setLeaving(null), 380);
+  }, [step, count, chapter, goChapter, progress]);
+
+  useEffect(() => () => clearTimeout(leaveTimer.current), []);
+
+  // Advance on a clock while visible; pausing keeps the spot.
+  useEffect(() => {
+    if (!running) return;
+    const target = (step + 1) / count;
+    const remaining = Math.max(0, target - progress.get()) * count * PHOTO_MS;
+    const controls = animate(progress, target, {
+      duration: remaining / 1000,
+      ease: "linear",
+      onComplete: next,
+    });
+    return () => controls.stop();
+  }, [running, step, count, chapter, next, progress]);
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.target !== e.currentTarget) return;
+    if (e.key === "ArrowRight") goChapter(chapter + 1);
+    if (e.key === "ArrowLeft") goChapter(chapter - 1);
   };
 
+  const nextChapter = snippets[(chapter + 1) % snippets.length];
+
   return (
-    <section id="story" className="relative overflow-hidden bg-cream px-5 py-20 md:px-8 md:py-32">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[1fr_minmax(0,24rem)] md:gap-20">
-        <div>
-          <Reveal>
-            <p className="eyebrow text-rose">Our story · in snippets</p>
-          </Reveal>
-          <Reveal delay={0.05}>
-            <h2 className="mt-3 font-display text-[clamp(2.4rem,9vw,4.25rem)] font-light italic leading-[1.05] tracking-tight text-ink">
-              {2026 - wedding.together.since} years of
-              <RotatingText
-                texts={[...rotatingWords]}
-                effect="blur"
-                rotationInterval={2400}
-                staggerDuration={0.02}
-                splitBy="characters"
-                mainClassName="mt-1 flex w-fit overflow-hidden rounded-2xl bg-rose px-3 pb-1 not-italic text-cream md:px-4"
-                elementLevelClassName="font-display italic"
-              />
-            </h2>
-          </Reveal>
-          <Reveal delay={0.12}>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft md:text-lg">
-              From high-school hallway selfies to a hot air balloon proposal. Tap through the
-              highlights — tap right for next, left for back, and hold to pause.
-            </p>
-          </Reveal>
+    <MotionConfig reducedMotion="user">
+      <section id="story" className="relative overflow-hidden bg-cream px-5 py-20 md:px-8 md:py-32">
+        <div className="mx-auto grid max-w-6xl items-center gap-14 md:grid-cols-2 md:gap-16">
+          <div>
+            <Reveal>
+              <p className="eyebrow text-rose">Our story · in snippets</p>
+            </Reveal>
+            <Reveal delay={0.05}>
+              <h2 className="mt-3 font-display text-[clamp(2.4rem,9vw,4.25rem)] font-light italic leading-[1.05] tracking-tight text-ink">
+                {2026 - wedding.together.since} years of
+                <RotatingText
+                  texts={[...rotatingWords]}
+                  effect="blur"
+                  rotationInterval={2400}
+                  staggerDuration={0.02}
+                  splitBy="characters"
+                  mainClassName="mt-1 flex w-fit overflow-hidden rounded-2xl bg-rose px-3 pb-1 not-italic text-cream md:px-4"
+                  elementLevelClassName="font-display italic"
+                />
+              </h2>
+            </Reveal>
+            <Reveal delay={0.12}>
+              <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft md:text-lg">
+                From high-school hallway selfies to a hot air balloon proposal. The photos flip
+                themselves — tap the stack to flip faster, or jump to any chapter.
+              </p>
+            </Reveal>
 
-          {/* Chapter list (desktop) */}
-          <ol className="mt-10 hidden max-w-md md:block">
-            {snippets.map((s, i) => (
-              <li key={s.src}>
-                <button
-                  type="button"
-                  onClick={() => jump(i)}
-                  className={`group flex w-full items-baseline gap-4 border-t border-line py-3 text-left transition-colors ${
-                    i === index ? "text-ink" : "text-ink-soft/70 hover:text-ink"
-                  }`}
-                >
-                  <span className={`w-12 text-sm tabular-nums ${i === index ? "text-rose" : ""}`}>
-                    {s.year}
-                  </span>
-                  <span className="font-display text-lg italic">{s.title}</span>
-                  {i === index ? (
-                    <motion.span layoutId="chapter-dot" className="ml-auto h-1.5 w-1.5 self-center rounded-full bg-rose" />
-                  ) : null}
-                </button>
-              </li>
-            ))}
-          </ol>
-        </div>
+            {/* Chapter list (desktop) */}
+            <ol className="mt-10 hidden max-w-md md:block">
+              {snippets.map((s, i) => (
+                <li key={s.title}>
+                  <button
+                    type="button"
+                    onClick={() => goChapter(i)}
+                    aria-current={i === chapter ? "step" : undefined}
+                    className={`group relative flex w-full items-center gap-4 py-3 text-left transition-colors ${
+                      i === chapter ? "text-ink" : "text-ink-soft/70 hover:text-ink"
+                    }`}
+                  >
+                    <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-line" />
+                    {i === chapter ? (
+                      <motion.span
+                        aria-hidden
+                        className="absolute inset-x-0 top-0 h-px origin-left bg-rose"
+                        style={{ scaleX: progress }}
+                      />
+                    ) : null}
+                    <span className={`w-12 text-sm tabular-nums ${i === chapter ? "text-rose" : ""}`}>{s.year}</span>
+                    <span className="font-display text-lg italic">{s.title}</span>
+                    <span className="ml-auto flex items-center">
+                      {s.photos.slice(0, 3).map((p, j) => (
+                        <span
+                          key={p.src}
+                          className={`relative -ml-2 h-7 w-7 overflow-hidden rounded-full ring-2 ring-cream transition duration-300 first:ml-0 ${
+                            i === chapter ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                          }`}
+                          style={{ zIndex: 3 - j }}
+                        >
+                          <Image src={p.src} alt="" fill sizes="28px" className="object-cover" />
+                        </span>
+                      ))}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
 
-        <Reveal y={50}>
+          {/* The stage */}
           <div
-            ref={rootRef}
-            tabIndex={0}
+            ref={stageRef}
             role="region"
             aria-roledescription="carousel"
-            aria-label="Story snippets"
+            aria-label="Our story in photos"
+            tabIndex={0}
             onKeyDown={onKeyDown}
-            className="relative mx-auto aspect-[9/16] max-h-[82svh] w-full max-w-[26rem] select-none overflow-hidden rounded-[2rem] bg-night shadow-[0_40px_80px_-30px_rgba(13,20,36,0.55)] ring-1 ring-ink/10"
+            className="relative flex flex-col items-center rounded-3xl outline-offset-8"
           >
-            <AnimatePresence initial={false}>
-              <motion.div
-                key={item.src}
-                className="absolute inset-0"
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {item.type === "video" ? (
-                  <video
-                    ref={videoRef}
-                    src={item.src}
-                    poster={item.poster}
-                    muted
-                    playsInline
-                    preload="metadata"
-                    className="h-full w-full object-cover"
-                    style={{ objectPosition: item.focus }}
-                    onTimeUpdate={(e) => {
-                      const v = e.currentTarget;
-                      if (v.duration) setProgress(v.currentTime / v.duration);
-                    }}
-                    onEnded={() => go(1)}
-                  />
-                ) : (
-                  <div
-                    className="kenburns absolute inset-0"
-                    style={{
-                      animationPlayState: running ? "running" : "paused",
-                      ["--kb" as string]: `${IMAGE_MS + 800}ms`,
-                    }}
-                  >
-                    <Image
-                      src={item.src}
-                      alt={`${item.year}: ${item.title}`}
-                      fill
-                      sizes="(min-width: 768px) 26rem, 92vw"
-                      className="object-cover"
-                      style={{ objectPosition: item.focus }}
-                    />
-                  </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute left-1/2 top-[42%] -z-0 h-[120%] w-[140%] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(closest-side,rgba(217,165,76,0.2),rgba(212,80,109,0.07)_55%,transparent)]"
+            />
 
-            {/* Preload next image */}
-            {snippets[(index + 1) % snippets.length].type === "image" ? (
-              <Image
-                src={snippets[(index + 1) % snippets.length].src}
-                alt=""
-                width={10}
-                height={10}
-                sizes="(min-width: 768px) 26rem, 92vw"
-                className="pointer-events-none absolute h-px w-px opacity-0"
-                aria-hidden
-              />
-            ) : null}
-
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-night/60 via-transparent to-night/85" />
-
-            {/* Progress bars */}
-            <div className="absolute inset-x-3 top-3 flex gap-1">
+            {/* Chapter progress (phones) */}
+            <div className="mb-10 flex w-full max-w-[22rem] gap-1 md:hidden" aria-hidden>
               {snippets.map((s, i) => (
-                <div key={s.src} className="h-[3px] flex-1 overflow-hidden rounded-full bg-cream/30">
-                  <div
-                    className="h-full rounded-full bg-cream"
-                    style={{
-                      width: `${i < index ? 100 : i === index ? progress * 100 : 0}%`,
-                    }}
-                  />
-                </div>
+                <span key={s.title} className="h-[3px] flex-1 overflow-hidden rounded-full bg-ink/10">
+                  {i < chapter ? <span className="block h-full w-full bg-rose" /> : null}
+                  {i === chapter ? (
+                    <motion.span className="block h-full w-full origin-left bg-rose" style={{ scaleX: progress }} />
+                  ) : null}
+                </span>
               ))}
             </div>
 
-            <div className="pointer-events-none absolute inset-x-4 top-7 flex items-center justify-between text-cream">
-              <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cream/15 font-script text-lg ring-1 ring-cream/40 backdrop-blur">
-                  J
-                </span>
-                <span className="text-xs font-semibold">
-                  {wedding.partnerA.toLowerCase()}.and.{wedding.partnerB.toLowerCase()}
-                </span>
-                <span className="text-xs text-cream/60">{item.year}</span>
-              </div>
-              {paused ? <span className="text-[0.65rem] uppercase tracking-widest text-cream/80">Paused</span> : null}
+            <div className="relative aspect-[4/5] w-[min(74vw,21rem)] md:w-[min(100%,23rem)]">
+              {seen ? (
+                <AnimatePresence initial={false}>
+                  <motion.div
+                    key={chapter}
+                    className="absolute inset-0"
+                    initial={{ opacity: 0, y: 70, rotate: chapter % 2 ? 6 : -6 }}
+                    animate={{ opacity: 1, y: 0, rotate: 0 }}
+                    exit={{ opacity: 0, y: -40, x: chapter % 2 ? 60 : -60, rotate: chapter % 2 ? 10 : -10 }}
+                    transition={{ type: "spring", stiffness: 140, damping: 20 }}
+                  >
+                    {item.photos.map((photo, i) => {
+                      const depth = (i - step + count) % count;
+                      return (
+                        <Card
+                          key={photo.src}
+                          photo={photo}
+                          item={item}
+                          depth={depth}
+                          count={count}
+                          flying={leaving === i}
+                          mirror={chapter % 2 ? -1 : 1}
+                        />
+                      );
+                    })}
+                  </motion.div>
+                </AnimatePresence>
+              ) : null}
+
+              <button
+                type="button"
+                onClick={next}
+                aria-label="Next photo"
+                className="absolute inset-0 z-20 cursor-pointer rounded-md focus:outline-none"
+              />
+
+              {/* Preload the next chapter */}
+              {nextChapter.photos.slice(0, 2).map((p) =>
+                isClip(p.src) ? null : (
+                  <Image
+                    key={p.src}
+                    src={p.src}
+                    alt=""
+                    width={10}
+                    height={10}
+                    sizes="(min-width: 768px) 23rem, 74vw"
+                    className="pointer-events-none absolute h-px w-px opacity-0"
+                    aria-hidden
+                  />
+                ),
+              )}
             </div>
 
             {/* Caption */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6 text-cream">
+            <div className="relative mt-10 min-h-[7rem] w-full max-w-sm text-center" aria-live="polite">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
-                  key={item.src}
-                  initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
+                  key={chapter}
+                  initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -8, filter: "blur(8px)" }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  exit={{ opacity: 0, y: -10, filter: "blur(8px)" }}
+                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <p className="font-display text-6xl font-light italic leading-none text-gold-soft">
+                  <p className="font-display text-5xl font-light italic leading-none text-rose">
                     {item.year}
                   </p>
-                  <p className="mt-3 font-display text-2xl">{item.title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-cream/80">{item.caption}</p>
+                  <p className="mt-3 text-base leading-relaxed text-ink-soft">{item.caption}</p>
                 </motion.div>
               </AnimatePresence>
             </div>
 
-            {/* Tap zones */}
-            <button
-              type="button"
-              aria-label="Previous snippet"
-              className="absolute inset-y-0 left-0 w-1/3 cursor-w-resize focus:outline-none"
-              onPointerDown={onPointerDown}
-              onPointerUp={() => onPointerUp(-1)}
-              onPointerLeave={() => holdTimer.current && clearTimeout(holdTimer.current)}
-              onContextMenu={(e) => e.preventDefault()}
-            />
-            <button
-              type="button"
-              aria-label="Next snippet"
-              className="absolute inset-y-0 right-0 w-2/3 cursor-e-resize focus:outline-none"
-              onPointerDown={onPointerDown}
-              onPointerUp={() => onPointerUp(1)}
-              onPointerLeave={() => holdTimer.current && clearTimeout(holdTimer.current)}
-              onContextMenu={(e) => e.preventDefault()}
-            />
+            {/* Controls */}
+            <div className="mt-4 flex items-center gap-2">
+              <span aria-hidden className="mr-2 w-14" />
+              <ControlButton label="Previous chapter" onClick={() => goChapter(chapter - 1)}>
+                <path d="M12.5 4.5 7 10l5.5 5.5" />
+              </ControlButton>
+              <ControlButton
+                label={isPlaying ? "Pause" : "Play"}
+                onClick={() => setPlaying(!isPlaying)}
+              >
+                {isPlaying ? (
+                  <path d="M7.5 5v10M12.5 5v10" />
+                ) : (
+                  <path d="M7 4.8v10.4a.5.5 0 0 0 .77.42l8-5.2a.5.5 0 0 0 0-.84l-8-5.2A.5.5 0 0 0 7 4.8Z" />
+                )}
+              </ControlButton>
+              <ControlButton label="Next chapter" onClick={() => goChapter(chapter + 1)}>
+                <path d="M7.5 4.5 13 10l-5.5 5.5" />
+              </ControlButton>
+              <span className="ml-2 w-14 text-xs tabular-nums text-ink-soft">
+                {String(chapter + 1).padStart(2, "0")} / {String(snippets.length).padStart(2, "0")}
+              </span>
+            </div>
           </div>
-        </Reveal>
+        </div>
+      </section>
+    </MotionConfig>
+  );
+}
+
+function Card({
+  photo,
+  item,
+  depth,
+  count,
+  flying,
+  mirror,
+}: {
+  photo: StoryPhoto;
+  item: Snippet;
+  depth: number;
+  count: number;
+  flying: boolean;
+  mirror: 1 | -1;
+}) {
+  const pose = flying ? OUT : POSES[Math.min(depth, POSES.length - 1)];
+  const front = depth === 0 && !flying;
+
+  return (
+    <motion.div
+      className="absolute inset-0"
+      style={{ zIndex: flying ? count + 1 : count - depth }}
+      // Dealt from a squared-up pile, then fanned out.
+      initial={{ x: "0%", y: "0%", rotate: 0, scale: 0.96 }}
+      animate={{
+        x: `${pose.x * mirror}%`,
+        y: `${pose.y}%`,
+        rotate: pose.rotate * mirror,
+        scale: pose.scale,
+      }}
+      transition={{ type: "spring", stiffness: flying ? 260 : 190, damping: flying ? 26 : 22 }}
+    >
+      <div className="absolute inset-0 flex flex-col rounded-[6px] bg-paper p-2.5 shadow-[0_28px_50px_-24px_rgba(28,24,20,0.55),0_2px_6px_rgba(28,24,20,0.08)] ring-1 ring-ink/5 md:p-3">
+        {/* washi tape, only on the card in front */}
+        <span
+          aria-hidden
+          className={`absolute -top-3 left-1/2 z-10 h-6 w-20 -translate-x-1/2 -rotate-3 bg-[repeating-linear-gradient(-45deg,rgba(241,217,168,0.9)_0_6px,rgba(241,217,168,0.7)_6px_12px)] shadow-[0_1px_2px_rgba(28,24,20,0.12)] transition-opacity duration-300 ${
+            front ? "opacity-100" : "opacity-0"
+          }`}
+        />
+        <div className="relative flex-1 overflow-hidden rounded-[3px] bg-line">
+          <motion.div
+            className="absolute inset-0"
+            initial={false}
+            animate={{ scale: front ? 1.12 : 1.02 }}
+            transition={front ? { duration: PHOTO_MS / 1000 + 0.8, ease: "linear" } : { duration: 0.6 }}
+          >
+            {isClip(photo.src) ? (
+              <video
+                src={photo.src}
+                muted
+                loop
+                autoPlay
+                playsInline
+                className="h-full w-full object-cover"
+                style={{ objectPosition: photo.focus }}
+              />
+            ) : (
+              <Image
+                src={photo.src}
+                alt={front ? `${item.year}: ${item.title}` : ""}
+                fill
+                sizes="(min-width: 768px) 23rem, 74vw"
+                className="object-cover"
+                style={{ objectPosition: photo.focus }}
+              />
+            )}
+          </motion.div>
+        </div>
+        <div className="flex h-12 shrink-0 items-center justify-between gap-3 px-1 md:h-14">
+          <span className="truncate font-script text-2xl leading-none text-ink/85 md:text-[1.75rem]">
+            {item.title}
+          </span>
+          <span className="text-[0.65rem] font-semibold tabular-nums tracking-[0.2em] text-ink-soft/80">
+            {item.year}
+          </span>
+        </div>
       </div>
-    </section>
+    </motion.div>
+  );
+}
+
+function ControlButton({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className="grid h-11 w-11 place-items-center rounded-full border border-ink/10 bg-paper/70 text-ink backdrop-blur transition hover:border-ink/25 hover:bg-paper active:scale-95"
+    >
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-[18px] w-[18px]"
+        aria-hidden
+      >
+        {children}
+      </svg>
+    </button>
   );
 }

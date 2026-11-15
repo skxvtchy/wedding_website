@@ -26,92 +26,88 @@ export const images = {
 } as const;
 
 /**
- * "Snippets" — the tap-through story reel.
- * Each item can be a photo or a video clip. To add a clip, drop an .mp4 into
- * public/videos/ and add: { type: "video", src: "/videos/clip.mp4", poster: "/images/…jpg", … }
+ * "Our story" chapters. Each one shows its photos as a stack of polaroids that
+ * shuffle on their own; the first photo is the cover.
+ * Most of these are the iPhone (HEIC) originals, converted by
+ * scripts/build-photos.mjs. A photo can also be a short muted clip — e.g. a
+ * Live Photo exported as .mov/.mp4 into public/videos/ — and it will loop.
  */
-export type Snippet = {
-  type: "image" | "video";
+export type StoryPhoto = {
   src: string;
-  poster?: string;
-  year: string;
-  title: string;
-  caption: string;
-  /** CSS object-position for the crop on tall phone screens. */
+  /** CSS object-position for the crop. */
   focus?: string;
 };
 
+export type Snippet = {
+  year: string;
+  title: string;
+  caption: string;
+  photos: StoryPhoto[];
+};
+
+const y = (year: string, ...files: string[]): StoryPhoto[] =>
+  files.map((f) => ({ src: `/images/years/${year}/${f}.jpg` }));
+
 export const snippets: Snippet[] = [
   {
-    type: "image",
-    src: "/images/years/2017/009.jpg",
     year: "2017",
     title: "Where it started",
     caption: "Two goofs, one frame, zero idea what was coming.",
+    photos: y("2017", "009", "001", "005", "018"),
   },
   {
-    type: "image",
-    src: "/images/years/2018/030.jpg",
     year: "2018",
     title: "Prom, obviously",
     caption: "Corsage pinned, dad jokes deployed, hearts fully committed.",
+    photos: y("2018", "030", "034", "031", "037"),
   },
   {
-    type: "image",
-    src: "/images/years/2019/009.jpg",
     year: "2019",
     title: "Snow days",
     caption: "Still figuring it out. Still choosing each other.",
+    photos: y("2019", "009", "003", "006", "008"),
   },
   {
-    type: "image",
-    src: "/images/years/2021/011.jpg",
     year: "2021",
     title: "Tractor era",
     caption: "Apple picking, flannel season, and one very red tractor.",
+    photos: y("2021", "011", "001", "009", "008"),
   },
   {
-    type: "image",
-    src: "/images/years/2022/008.jpg",
     year: "2022",
     title: "Caps in the air",
     caption: "Graduated together. Celebrated louder.",
+    photos: y("2022", "008", "006", "004", "010"),
   },
   {
-    type: "image",
-    src: "/images/years/2023/025.jpg",
     year: "2023",
     title: "Big trips",
     caption: "New cities, same silly faces.",
+    photos: y("2023", "025", "018", "023", "006"),
   },
   {
-    type: "image",
-    src: "/images/years/2024/003.jpg",
     year: "2024",
     title: "Swept off her feet",
     caption: "Literally. Sunset optional, piggyback mandatory.",
-    focus: "45% center",
+    photos: [{ src: "/images/years/2024/003.jpg", focus: "45% center" }, ...y("2024", "006", "007", "012")],
   },
   {
-    type: "image",
-    src: "/images/years/2025/007.jpg",
     year: "2025",
     title: "A sky full of lanterns",
     caption: "Wishes sent up. Most of them about each other.",
+    photos: y("2025", "007", "003", "001", "005"),
   },
   {
-    type: "image",
-    src: "/images/years/2026/011.jpg",
     year: "2026",
     title: "Up, up, and away",
     caption: "A hot air balloon. A question. A very loud yes.",
+    photos: y("2026", "011", "012", "013"),
   },
   {
-    type: "image",
-    src: "/images/years/2026/015.jpg",
     year: "2026",
     title: "Said yes",
     caption: "Now we float.",
+    photos: y("2026", "015", "016", "009", "027"),
   },
 ];
 
