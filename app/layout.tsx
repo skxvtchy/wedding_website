@@ -22,7 +22,7 @@ const script = Pinyon_Script({
 });
 
 const title = `${wedding.partnerA} & ${wedding.partnerB} · ${wedding.dateShort}`;
-const description = `${wedding.partnerA} and ${wedding.partnerB} are getting married on ${wedding.date} at ${wedding.venue.name}. Our story, the details, and nine years of photos.`;
+const description = `${wedding.partnerA} and ${wedding.partnerB} are getting married on ${wedding.date} at ${wedding.venue.name}. Our story, the details, and years of photos.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(

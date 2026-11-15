@@ -8,15 +8,16 @@ export const wedding = {
   partnerB: "Jon",
   tagline: "We're getting married",
   /** ISO date-time of the ceremony, in the venue's local time. */
-  dateISO: "2026-10-10T16:30:00-05:00",
-  date: "Saturday, October 10, 2026",
-  dateShort: "10.10.26",
+  dateISO: "2027-07-03T16:00:00-04:00",
+  date: "Saturday, July 3, 2027",
+  dateShort: "07.03.27",
+  time: "4:00 PM",
   together: { since: 2017 },
   venue: {
-    name: "Skyline Conservatory",
-    city: "Austin, Texas",
-    address: "1200 Garden Lane, Austin, TX 78701",
-    mapsUrl: "https://maps.google.com/?q=1200+Garden+Lane+Austin+TX+78701",
+    name: "The Madison Hotel",
+    city: "Morristown, NJ",
+    address: "1 Convent Road, Morristown, NJ 07960",
+    mapsUrl: "https://maps.google.com/?q=The+Madison+Hotel,+1+Convent+Road,+Morristown,+NJ+07960",
   },
 } as const;
 
@@ -129,13 +130,7 @@ export const places = [
   "Rhode Island",
 ] as const;
 
-export const rotatingWords = [
-  "adventures",
-  "bad selfies",
-  "road trips",
-  "late-night snacks",
-  "choosing each other",
-] as const;
+export const rotatingWords = ["love", "laughter", "adventures", "late-night talks", "us"] as const;
 
 export const photoBreaks = {
   afterSchedule: {
@@ -165,29 +160,29 @@ export const travel = {
   title: "Getting there",
   lead: "Easy to find, easier to stay. A few notes so arrival feels calm.",
   directions:
-    "From downtown, take Cesar Chavez east and follow signs for Garden Lane. Rideshare drop-off is at the conservatory porte-cochère.",
+    "The Madison Hotel sits on Convent Road just off Route 124 (Madison Avenue), a few minutes from I-287. Rideshare drop-off is at the main entrance.",
   parkingNotes: [
-    { title: "Self-parking", body: "Complimentary in Lot B — enter from Willow Street." },
-    { title: "Valet", body: "Available at the main entrance from 3:00 PM." },
-    { title: "Accessible", body: "Reserved spaces are marked near the east doors." },
+    { title: "Parking", body: "On-site parking at the hotel." },
+    { title: "By train", body: "Convent Station on NJ Transit's Morristown Line is just down the road." },
+    { title: "Staying over", body: "The venue is a hotel — stay right where the party is." },
   ],
 };
 
 export const schedule = {
   title: "The big day",
-  lead: "Ceremony, dinner, and dancing under the sky.",
+  lead: "Ceremony, dinner, and dancing on a summer night.",
   items: [
-    { time: "4:00 PM", title: "Guest arrival", detail: "Drinks and lawn games on the terrace." },
-    { time: "4:30 PM", title: "Ceremony", detail: "Under the conservatory dome." },
-    { time: "5:15 PM", title: "Cocktail hour", detail: "Garden courtyard — photos welcome." },
-    { time: "6:30 PM", title: "Dinner", detail: "Seated dinner in the great hall." },
-    { time: "8:00 PM", title: "Dancing", detail: "Open floor until late." },
+    { time: "3:30 PM", title: "Guest arrival", detail: "Find your seat and settle in." },
+    { time: "4:00 PM", title: "Ceremony", detail: "The part where we say I do." },
+    { time: "4:45 PM", title: "Cocktail hour", detail: "Drinks, bites, and photos welcome." },
+    { time: "6:00 PM", title: "Dinner", detail: "Seated dinner and toasts." },
+    { time: "7:30 PM", title: "Dancing", detail: "Open floor until late." },
   ],
 };
 
 export const dressCode = {
   title: "Dress code",
-  lead: "Garden formal — think polished, with room to dance.",
+  lead: "Summer formal — think polished, with room to dance.",
   palette: [
     { name: "Dusk blue", hex: "#5b7aa6" },
     { name: "Lantern gold", hex: "#e2b25c" },
@@ -197,8 +192,8 @@ export const dressCode = {
   ],
   details: [
     "Suits, cocktail dresses, or dressy separates.",
-    "Soft florals and sky blues feel right for the conservatory.",
-    "Comfortable shoes encouraged — the lawn is soft and the dance floor runs late.",
+    "Soft florals and sky blues feel right for a July evening.",
+    "Comfortable shoes encouraged — the dance floor runs late.",
   ],
 };
 
@@ -212,8 +207,8 @@ export const faq = [
     a: "Plus ones are included when named on your invitation. If you’re unsure, check the envelope or message us.",
   },
   {
-    q: "Is the venue indoors or outdoors?",
-    a: "Both! The ceremony is under the glass conservatory dome; cocktail hour spills out into the garden.",
+    q: "Where should I stay?",
+    a: "The Madison Hotel is the venue and a hotel, so you can stay right where the party is. More details soon.",
   },
   {
     q: "Can I take photos?",

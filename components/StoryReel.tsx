@@ -10,9 +10,9 @@ import {
   useMotionValue,
 } from "motion/react";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import RotatingText from "@/components/reactbits/RotatingText";
 import { rotatingWords, snippets, wedding, type Snippet, type StoryPhoto } from "@/lib/content";
 import { Reveal } from "./Reveal";
+import { StoryHeadline } from "./StoryHeadline";
 
 /** How long each photo stays on top of the stack. */
 const PHOTO_MS = 2800;
@@ -118,18 +118,7 @@ export function StoryReel() {
               <p className="eyebrow text-rose">Our story · in snippets</p>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="mt-3 font-display text-[clamp(2.4rem,9vw,4.25rem)] font-light italic leading-[1.05] tracking-tight text-ink">
-                {2026 - wedding.together.since} years of
-                <RotatingText
-                  texts={[...rotatingWords]}
-                  effect="blur"
-                  rotationInterval={2400}
-                  staggerDuration={0.02}
-                  splitBy="characters"
-                  mainClassName="mt-1 flex w-fit overflow-hidden rounded-2xl bg-rose px-3 pb-1 not-italic text-cream md:px-4"
-                  elementLevelClassName="font-display italic"
-                />
-              </h2>
+              <StoryHeadline years={2026 - wedding.together.since} words={rotatingWords} />
             </Reveal>
             <Reveal delay={0.12}>
               <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft md:text-lg">

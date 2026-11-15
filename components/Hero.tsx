@@ -128,8 +128,10 @@ export function Hero() {
             transition={{ delay: 1.4, duration: 1 }}
           >
             <p className="font-display text-2xl md:text-3xl">{wedding.date.split(", ").slice(1).join(", ")}</p>
-            <p className="mt-1 text-sm text-cream/70">
-              {wedding.venue.name} · {wedding.venue.city}
+            <p className="mt-1 text-sm leading-relaxed text-cream/70">
+              {wedding.time} · {wedding.venue.name}
+              <br />
+              {wedding.venue.city}
             </p>
             <a
               href="#story"
