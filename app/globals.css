@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --sky-top: #6ba8d4;
+  --sky-mid: #a8d0ea;
+  --sky-low: #d7ebf7;
+  --sky-horizon: #f2f7fb;
+  --ink: #1b2b3a;
+  --ink-soft: #3d5163;
+  --cloud: #ffffff;
+  --gold: #c9a227;
+  --sole: #c45a2c;
+  --basket: #8b5a3c;
+  --paper: #f7fafc;
+  --background: var(--sky-horizon);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-sky-top: var(--sky-top);
+  --color-sky-mid: var(--sky-mid);
+  --color-sky-low: var(--sky-low);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-gold: var(--gold);
+  --color-sole: var(--sole);
+  --color-basket: var(--basket);
+  --color-paper: var(--paper);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--gold) 40%, white);
+  color: var(--ink);
+}
+
+.sky-wash {
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 20% 15%,
+      rgba(255, 255, 255, 0.55),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 85% 25%,
+      rgba(255, 255, 255, 0.35),
+      transparent 50%
+    ),
+    linear-gradient(
+      180deg,
+      var(--sky-top) 0%,
+      var(--sky-mid) 32%,
+      var(--sky-low) 62%,
+      var(--sky-horizon) 100%
+    );
+}
+
+.cloud-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(7deg);
+  }
+}
+
+@keyframes chase-run {
+  0% {
+    transform: translateX(-20vw);
+  }
+  100% {
+    transform: translateX(120vw);
+  }
+}
+
+.sway {
+  animation: sway 3.2s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.sway-delayed {
+  animation: sway 3.8s ease-in-out infinite;
+  animation-delay: -1.2s;
+  transform-origin: top center;
+}
+
+.chase-track {
+  animation: chase-run 9s linear infinite;
+}
+
+.chase-sole {
+  animation: chase-run 9s linear infinite;
+  animation-delay: 0.55s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .sway,
+  .sway-delayed {
+    animation: none !important;
+  }
+
+  .chase-track,
+  .chase-sole {
+    animation: none !important;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .chase-sole {
+    margin-left: 4.5rem;
+  }
 }
