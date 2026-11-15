@@ -1,7 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { useRef } from "react";
 import { photoCascade } from "@/lib/content";
 import { Reveal } from "./Reveal";
@@ -28,7 +33,11 @@ export function PhotoCascade() {
     target: ref,
     offset: ["start end", "end start"],
   });
-  const drift = useTransform(scrollYProgress, [0, 1], reduceMotion ? [0, 0] : [40, -40]);
+  const drift = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduceMotion ? [0, 0] : [40, -40],
+  );
 
   return (
     <section

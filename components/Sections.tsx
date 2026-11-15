@@ -104,7 +104,11 @@ export function Sections({ breaks }: SectionsProps) {
 
       {breaks?.afterSchedule}
 
-      <SectionShell id="party" title={bridalParty.title} lead={bridalParty.lead}>
+      <SectionShell
+        id="party"
+        title={bridalParty.title}
+        lead={bridalParty.lead}
+      >
         <ul className="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3">
           {bridalParty.people.map((person) => (
             <li key={person.name}>
@@ -147,7 +151,11 @@ export function Sections({ breaks }: SectionsProps) {
         </ul>
       </SectionShell>
 
-      <SectionShell id="dress-code" title={dressCode.title} lead={dressCode.lead}>
+      <SectionShell
+        id="dress-code"
+        title={dressCode.title}
+        lead={dressCode.lead}
+      >
         <ul className="space-y-3 text-ink-soft">
           {dressCode.details.map((line) => (
             <li key={line} className="border-l-2 border-sky-mid pl-4">
