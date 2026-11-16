@@ -21,8 +21,8 @@ const script = Pinyon_Script({
   weight: "400",
 });
 
-const title = `${wedding.partnerA} & ${wedding.partnerB} · ${wedding.dateShort}`;
-const description = `${wedding.partnerA} and ${wedding.partnerB} are getting married on ${wedding.date} at ${wedding.venue.name}. Our story, the details, and years of photos.`;
+const title = `${wedding.partnerA} & ${wedding.partnerB} · ${wedding.dateShort} · ${wedding.hashtag}`;
+const description = `${wedding.fullNameA} and ${wedding.fullNameB} are getting married on ${wedding.date} at ${wedding.venue.name}. Our story, the details, and years of photos.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -57,6 +57,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      // Lets Next jump to the top on navigation despite smooth scrolling in globals.css.
+      data-scroll-behavior="smooth"
       className={`${display.variable} ${body.variable} ${script.variable} antialiased`}
     >
       <body className="flex min-h-dvh flex-col">{children}</body>

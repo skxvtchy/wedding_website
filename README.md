@@ -1,4 +1,4 @@
-# Jon & Alex — Wedding Website
+# Jonathan & Jasmine — Wedding Website
 
 Next.js (App Router) wedding site with a scroll-rising hot air balloon, guest info sections, and a footer shoe chase.
 

@@ -4,8 +4,13 @@
  */
 
 export const wedding = {
-  partnerA: "Jasmine",
-  partnerB: "Jon",
+  partnerA: "Jonathan",
+  partnerB: "Jasmine",
+  fullNameA: "Jonathan Wong",
+  fullNameB: "Jasmine Then",
+  /** Her last name is Then… */
+  hashtag: "#ThenSheBecameAWong",
+  yearsTogether: 10,
   tagline: "We're getting married",
   /** ISO date-time of the ceremony, in the venue's local time. */
   dateISO: "2027-07-03T16:00:00-04:00",
@@ -113,7 +118,7 @@ export const snippets: Snippet[] = [
 ];
 
 export const stats = [
-  { value: 2026 - wedding.together.since, suffix: "", label: "years together" },
+  { value: wedding.yearsTogether, suffix: "", label: "years together" },
   { value: 191, suffix: "", label: "photos below" },
   { value: 1, suffix: "", label: "hot air balloon" },
   { value: 1, suffix: "", label: "very loud yes" },
@@ -212,6 +217,6 @@ export const faq = [
   },
   {
     q: "Can I take photos?",
-    a: "During the ceremony, we’d love an unplugged moment. After that — snap away and send us everything.",
+    a: `During the ceremony, we’d love an unplugged moment. After that — snap away and tag ${wedding.hashtag}.`,
   },
 ];

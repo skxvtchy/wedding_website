@@ -118,7 +118,7 @@ export function StoryReel() {
               <p className="eyebrow text-rose">Our story · in snippets</p>
             </Reveal>
             <Reveal delay={0.05}>
-              <StoryHeadline years={2026 - wedding.together.since} words={rotatingWords} />
+              <StoryHeadline years={wedding.yearsTogether} words={rotatingWords} />
             </Reveal>
             <Reveal delay={0.12}>
               <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft md:text-lg">
