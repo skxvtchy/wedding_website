@@ -124,15 +124,15 @@ export const stats = [
   { value: 1, suffix: "", label: "very loud yes" },
 ] as const;
 
-/** Places we've been together — scrolls across the "Places" band. */
-export const places = [
-  "Thailand",
-  "Binghamton",
-  "Bayside",
-  "Florida",
-  "Upstate New York",
-  "Washington",
-  "Rhode Island",
+/** "A few of our favorite things" — scrolls across the night band. */
+export const favorites = [
+  "Orange cats",
+  "Nike Dunks",
+  "Cat naps",
+  "Jordan 1s",
+  "Hypebeast kicks",
+  "Air Max",
+  "Sneaker drops",
 ] as const;
 
 export const rotatingWords = ["love", "laughter", "adventures", "late-night talks", "us"] as const;
