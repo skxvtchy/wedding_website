@@ -5,13 +5,10 @@ export function Footer() {
     <footer className="relative overflow-hidden bg-night text-cream">
       <div className="mx-auto max-w-3xl px-6 pb-[calc(3.5rem+env(safe-area-inset-bottom))] pt-20 text-center md:px-8">
         <p className="font-display text-5xl font-light italic leading-tight md:text-7xl">
-          <span className="block sm:inline">{wedding.partnerA}</span>{" "}
-          <span className="font-script text-gold">&amp;</span> {wedding.partnerB}
+          <span className="block">{wedding.fullNameA}</span>
+          <span className="font-script text-gold">&amp;</span> {wedding.fullNameB}
         </p>
         <p className="eyebrow mt-5 text-cream/60">
-          {wedding.fullNameA} &amp; {wedding.fullNameB}
-        </p>
-        <p className="eyebrow mt-2 text-cream/40">
           {wedding.dateShort} · {wedding.venue.city}
         </p>
         <p className="mx-auto mt-8 w-fit rounded-full px-4 py-1.5 text-sm font-semibold tracking-wide text-gold-soft ring-1 ring-gold/35">

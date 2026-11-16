@@ -92,31 +92,31 @@ export function Hero() {
 
         <h1 className="mt-5 font-display font-light leading-[0.88] tracking-tight">
           <BlurText
-            text={wedding.partnerA}
+            text={wedding.fullNameA}
             as="span"
             trigger="load"
             animateBy="letters"
-            delay={70}
+            delay={55}
             stepDuration={0.45}
-            className="text-[clamp(4.25rem,21vw,9.5rem)] italic"
+            className="whitespace-nowrap text-[clamp(2.25rem,12.25vw,6.5rem)] italic"
           />
-          <span className="flex items-center gap-4">
+          <span className="flex items-center gap-2.5 whitespace-nowrap">
             <motion.span
               initial={{ opacity: 0, scale: 0.6, rotate: -12 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ delay: 0.7, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="-mb-3 font-script text-[clamp(4.5rem,22vw,9rem)] leading-none text-gold"
+              className="-mb-2 font-script text-[clamp(2.5rem,13.5vw,7rem)] leading-none text-gold"
             >
               &amp;
             </motion.span>
             <BlurText
-              text={wedding.partnerB}
+              text={wedding.fullNameB}
               as="span"
               trigger="load"
               animateBy="letters"
-              delay={90}
+              delay={70}
               stepDuration={0.45}
-              className="text-[clamp(4.25rem,21vw,9.5rem)] italic"
+              className="whitespace-nowrap text-[clamp(2.25rem,12.25vw,6.5rem)] italic"
             />
           </span>
         </h1>
@@ -158,14 +158,14 @@ export function Hero() {
             initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
             animate={{ opacity: 1, rotate: 0, scale: 1 }}
             transition={{ delay: 1.6, duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            className="shrink-0"
+            className="hidden shrink-0 min-[360px]:block"
           >
             <CircularText
-              text={`${wedding.dateShort} ✦ ${wedding.partnerA} & ${wedding.partnerB} ✦ `}
-              size={112}
+              text={`${wedding.dateShort} ✦ ${wedding.fullNameA} & ${wedding.fullNameB} ✦ `}
+              size={126}
               fontSize={11}
               fontWeight={600}
-              letterSpacing={2}
+              letterSpacing={1.5}
               spinDuration={22}
               onHover="speedUp"
               color="var(--gold-soft)"
