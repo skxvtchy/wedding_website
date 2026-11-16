@@ -28,7 +28,7 @@ export function Marquee() {
           href="/game"
           className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-cream/10 px-5 text-sm font-semibold text-cream ring-1 ring-cream/20 transition hover:bg-cream/15 active:scale-95"
         >
-          Play with Sol <span aria-hidden>→</span>
+          Play with Sole <span aria-hidden>→</span>
         </Link>
       </Reveal>
 

@@ -48,7 +48,7 @@ const STARS = Array.from({ length: 46 }, (_, i) => {
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /**
- * Play with Sol: slide Sol the orange cat to catch falling sneakers. Golden pairs
+ * Play with Sole: slide Sole the orange cat to catch falling sneakers. Golden pairs
  * are worth 5, catching in a row builds a combo, and cucumbers cost a life.
  */
 export function CatGame() {
@@ -469,10 +469,10 @@ export function CatGame() {
                   <OrangeCat className="h-16 w-16" />
                   <Sneaker className="h-12 w-16" />
                 </div>
-                <h1 className="mt-4 font-display text-4xl italic">Play with Sol</h1>
+                <h1 className="mt-4 font-display text-4xl italic">Play with Sole</h1>
                 <p className="mt-3 text-sm leading-relaxed text-cream/75">
-                  Help Sol catch every sneaker. Golden pairs are worth 5 — and dodge the cucumbers,
-                  Sol hates those.
+                  Help Sole catch every sneaker. Golden pairs are worth 5 — and dodge the cucumbers,
+                  Sole hates those.
                 </p>
                 <p className="mt-3 text-xs text-cream/50">Drag to move · or use ← →</p>
               </>
