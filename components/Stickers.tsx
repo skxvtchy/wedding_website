@@ -101,7 +101,7 @@ export function Sneaker({ className = "", accent = "#d4334a" }: { className?: st
   );
 }
 
-/** The villain of Kick Catch. */
+/** The villain of Play with Sol. */
 export function Cucumber({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 120 64" className={className} role="img" aria-label="Cucumber">

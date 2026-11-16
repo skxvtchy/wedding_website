@@ -4,7 +4,7 @@ import { Nav } from "@/components/Nav";
 import { wedding } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: `Kick Catch · ${wedding.fullNameA} & ${wedding.fullNameB}`,
+  title: `Play with Sol · ${wedding.fullNameA} & ${wedding.fullNameB}`,
 };
 
 export default function GamePage() {
