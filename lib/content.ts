@@ -3,6 +3,8 @@
  * Edit this file to change names, dates, venue details, etc.
  */
 
+import { allPhotos } from "./allPhotos";
+
 export const wedding = {
   partnerA: "Jonathan",
   partnerB: "Jasmine",
@@ -119,7 +121,7 @@ export const snippets: Snippet[] = [
 
 export const stats = [
   { value: wedding.yearsTogether, suffix: "", label: "years together" },
-  { value: 191, suffix: "", label: "photos below" },
+  { value: allPhotos.length, suffix: "", label: "photos below" },
   { value: 1, suffix: "", label: "hot air balloon" },
   { value: 1, suffix: "", label: "very loud yes" },
 ] as const;
@@ -147,7 +149,8 @@ export const photoBreaks = {
     caption: "Gifts optional. Dancing mandatory.",
   },
   afterDress: {
-    src: "/images/years/2026/018.jpg",
+    src: "/images/years/2026/014.jpg",
+    position: "72% center",
     caption: "Come as you are — comfy shoes welcome.",
   },
 } as const;

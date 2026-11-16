@@ -214,12 +214,6 @@ export const allPhotos: PhotoItem[] = [
   },
   {
     "year": "2018",
-    "src": "/images/years/2018/015.jpg",
-    "width": 1352,
-    "height": 1800
-  },
-  {
-    "year": "2018",
     "src": "/images/years/2018/016.jpg",
     "width": 1352,
     "height": 1800
@@ -235,12 +229,6 @@ export const allPhotos: PhotoItem[] = [
     "src": "/images/years/2018/018.jpg",
     "width": 750,
     "height": 1334
-  },
-  {
-    "year": "2018",
-    "src": "/images/years/2018/019.jpg",
-    "width": 1257,
-    "height": 1800
   },
   {
     "year": "2018",
@@ -634,12 +622,6 @@ export const allPhotos: PhotoItem[] = [
   },
   {
     "year": "2022",
-    "src": "/images/years/2022/015.jpg",
-    "width": 1341,
-    "height": 1306
-  },
-  {
-    "year": "2022",
     "src": "/images/years/2022/016.jpg",
     "width": 1344,
     "height": 1792
@@ -886,12 +868,6 @@ export const allPhotos: PhotoItem[] = [
   },
   {
     "year": "2024",
-    "src": "/images/years/2024/014.jpg",
-    "width": 1800,
-    "height": 1350
-  },
-  {
-    "year": "2024",
     "src": "/images/years/2024/015.jpg",
     "width": 1137,
     "height": 1800
@@ -1075,12 +1051,6 @@ export const allPhotos: PhotoItem[] = [
     "src": "/images/years/2026/017.jpg",
     "width": 1178,
     "height": 666
-  },
-  {
-    "year": "2026",
-    "src": "/images/years/2026/018.jpg",
-    "width": 1350,
-    "height": 1800
   },
   {
     "year": "2026",
