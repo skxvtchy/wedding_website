@@ -5,7 +5,9 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
 import { allPhotos, photosByYear, years } from "@/lib/allPhotos";
+import { wedding } from "@/lib/content";
 import { Lightbox } from "./Lightbox";
+import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { YearTimeline } from "./YearTimeline";
 
@@ -113,6 +115,17 @@ export function YearsGallery() {
             Open the full album →
           </Link>
         </div>
+
+        {/* Her last name is Then… */}
+        <Reveal className="mx-2 mt-14 md:mx-auto md:max-w-lg">
+          <div className="rounded-3xl border border-line bg-cream px-5 py-8 text-center">
+            <p className="eyebrow text-rose">Taking photos at the wedding?</p>
+            <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.25rem,7vw,2.25rem)] italic leading-tight text-ink">
+              {wedding.hashtag}
+            </p>
+            <p className="mt-2 text-sm text-ink-soft">Tag them so we can find every one.</p>
+          </div>
+        </Reveal>
       </div>
 
       <Lightbox

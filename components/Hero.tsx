@@ -121,16 +121,6 @@ export function Hero() {
           </span>
         </h1>
 
-        {/* Her last name is Then… */}
-        <motion.p
-          initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ delay: 1.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 w-fit rounded-full bg-night/45 px-4 py-1.5 text-sm font-semibold tracking-wide text-gold-soft ring-1 ring-gold/35 backdrop-blur-md md:mt-8"
-        >
-          {wedding.hashtag}
-        </motion.p>
-
         <div className="mt-auto flex items-end justify-between gap-6 md:mt-12 md:max-w-xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

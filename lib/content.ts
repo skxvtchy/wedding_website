@@ -9,7 +9,7 @@ export const wedding = {
   fullNameA: "Jonathan Wong",
   fullNameB: "Jasmine Then",
   /** Her last name is Then… */
-  hashtag: "#ThenSheBecameAWong",
+  hashtag: "#ThenshebecameaWong",
   yearsTogether: 10,
   tagline: "We're getting married",
   /** ISO date-time of the ceremony, in the venue's local time. */
@@ -205,7 +205,7 @@ export const dressCode = {
 export const faq = [
   {
     q: "Can I bring my kids?",
-    a: "We’re keeping the celebration adults-only (16+), with a quiet nursing/parent room available if needed.",
+    a: "Yes! Kids are welcome — bring the whole family.",
   },
   {
     q: "Can I bring a plus one?",

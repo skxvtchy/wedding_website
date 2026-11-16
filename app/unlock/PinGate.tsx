@@ -101,7 +101,6 @@ export function PinGate({ length }: { length: number }) {
         <p className="eyebrow mt-2 text-gold-soft/80">
           {wedding.dateShort} · {wedding.venue.city}
         </p>
-        <p className="mt-2 text-xs font-semibold tracking-wide text-cream/50">{wedding.hashtag}</p>
 
         <form ref={formRef} action={action} className="mt-[min(2.5rem,5svh)] flex w-full flex-col items-center">
           <label htmlFor="pin" className="text-sm text-cream/70">
