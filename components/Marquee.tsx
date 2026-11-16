@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import CurvedLoop from "@/components/reactbits/CurvedLoop";
 import { favorites } from "@/lib/content";
 import { Reveal } from "./Reveal";
@@ -23,6 +24,12 @@ export function Marquee() {
         <p id="favorites-title" className="eyebrow mt-5 text-gold">
           A few of our favorite things
         </p>
+        <Link
+          href="/game"
+          className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-cream/10 px-5 text-sm font-semibold text-cream ring-1 ring-cream/20 transition hover:bg-cream/15 active:scale-95"
+        >
+          Play Kick Catch <span aria-hidden>→</span>
+        </Link>
       </Reveal>
 
       {/* Scaled up on phones so the words stay big; the edges fade out. */}

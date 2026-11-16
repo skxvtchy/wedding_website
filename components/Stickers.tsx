@@ -61,11 +61,11 @@ export function OrangeCat({ className = "" }: { className?: string }) {
 }
 
 /** A high-top sneaker in a red/white/black colorway (no brand marks). */
-export function Sneaker({ className = "" }: { className?: string }) {
+export function Sneaker({ className = "", accent = "#d4334a" }: { className?: string; accent?: string }) {
   return (
     <svg viewBox="0 0 150 104" className={className} role="img" aria-label="High-top sneaker">
       {/* outsole + midsole */}
-      <path d="M9 80h124c7 0 11 4 11 9v1c0 5-4 8-9 8H15c-6 0-10-4-10-9v-1c0-5 1-8 4-8z" fill="#d4334a" />
+      <path d="M9 80h124c7 0 11 4 11 9v1c0 5-4 8-9 8H15c-6 0-10-4-10-9v-1c0-5 1-8 4-8z" fill={accent} />
       <path d="M9 78h125c6 0 9 3 9 7v.5c0 3-2 5-5 5H13c-5 0-8-3-8-6.5V84c0-4 1-6 4-6z" fill="#fbf7ef" />
       {/* upper */}
       <path
@@ -73,9 +73,9 @@ export function Sneaker({ className = "" }: { className?: string }) {
         fill="#fbf7ef"
       />
       {/* heel + ankle panel */}
-      <path d="M14 44h22c4 0 6 3 6 6v29H14z" fill="#d4334a" />
+      <path d="M14 44h22c4 0 6 3 6 6v29H14z" fill={accent} />
       {/* toe cap */}
-      <path d="M102 61.5c12 2.3 21 8.6 23.5 17.5H95c0-8 2.5-14.5 7-17.5z" fill="#d4334a" />
+      <path d="M102 61.5c12 2.3 21 8.6 23.5 17.5H95c0-8 2.5-14.5 7-17.5z" fill={accent} />
       {/* eyestay */}
       <path d="M50 24l7 22c2 6 7 10 14 11l12 2-3 9-13-2c-10-2-17-8-20-17l-7-23z" fill="#1c1814" />
       {/* collar */}
@@ -97,6 +97,43 @@ export function Sneaker({ className = "" }: { className?: string }) {
         opacity="0.35"
         fill="none"
       />
+    </svg>
+  );
+}
+
+/** The villain of Kick Catch. */
+export function Cucumber({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 120 64" className={className} role="img" aria-label="Cucumber">
+      <path d="M7 34 2 29" stroke="#6b4f2a" strokeWidth="3.5" strokeLinecap="round" />
+      <path
+        d="M8 35c0-13 15-21 42-23 27-2 51 2 62 13 6 7 2 17-11 21-17 6-47 8-67 4C16 48 8 44 8 35z"
+        fill="#4c9a3a"
+      />
+      <path
+        d="M16 31c5-8 19-13 39-14 22-1 42 2 51 9"
+        stroke="#86cc66"
+        strokeWidth="4"
+        fill="none"
+        strokeLinecap="round"
+        opacity="0.75"
+      />
+      <ellipse cx="112" cy="31" rx="4" ry="6.5" fill="#3a7d2b" />
+      {[
+        [26, 40],
+        [40, 27],
+        [55, 42],
+        [70, 29],
+        [86, 41],
+        [98, 30],
+      ].map(([cx, cy]) => (
+        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="2.2" fill="#2f6b22" />
+      ))}
+      {/* grumpy face */}
+      <circle cx="48" cy="33" r="3.2" fill="#14210f" />
+      <circle cx="64" cy="33" r="3.2" fill="#14210f" />
+      <path d="M43 26l9 3M69 26l-9 3" stroke="#14210f" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M50 43c4-3 8-3 12 0" stroke="#14210f" strokeWidth="2.4" fill="none" strokeLinecap="round" />
     </svg>
   );
 }

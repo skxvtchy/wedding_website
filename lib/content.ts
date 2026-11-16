@@ -159,6 +159,7 @@ export const navLinks = [
   { href: "/#travel", label: "Travel" },
   { href: "/#dress-code", label: "Dress Code" },
   { href: "/#faq", label: "FAQ" },
+  { href: "/game", label: "Game" },
 ] as const;
 
 export const travel = {
