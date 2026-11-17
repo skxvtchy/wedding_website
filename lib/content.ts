@@ -8,8 +8,6 @@ import { allPhotos } from "./allPhotos";
 export const wedding = {
   partnerA: "Jonathan",
   partnerB: "Jasmine",
-  fullNameA: "Jonathan Wong",
-  fullNameB: "Jasmine Then",
   /** Her last name is Then… */
   hashtag: "#ThenshebecameaWong",
   yearsTogether: 10,

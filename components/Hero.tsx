@@ -34,7 +34,7 @@ export function Hero() {
     >
       {/* Photo: fills the screen below the names on phones (fading up into the
           night sky), an arched frame on larger screens */}
-      <div className="absolute inset-x-0 bottom-0 top-[13svh] -z-10 [mask-image:linear-gradient(to_bottom,transparent,#000_22%)] md:inset-auto md:[mask-image:none] md:right-[6%] md:top-1/2 md:h-[min(78vh,46rem)] md:w-[min(36vw,34rem)] md:-translate-y-1/2">
+      <div className="absolute inset-x-0 bottom-0 top-[16svh] -z-10 [mask-image:linear-gradient(to_bottom,transparent,#000_22%)] md:inset-auto md:[mask-image:none] md:right-[6%] md:top-1/2 md:h-[min(78vh,46rem)] md:w-[min(36vw,34rem)] md:-translate-y-1/2">
       <motion.div style={{ y: imgY }} className="parallax h-full w-full">
         <motion.div
           initial={{ scale: 1.15, opacity: 0 }}
@@ -44,7 +44,7 @@ export function Hero() {
         >
           <Image
             src={images.hero}
-            alt={`${wedding.fullNameA} and ${wedding.fullNameB} smiling in a hot air balloon basket high above green countryside`}
+            alt={`${wedding.partnerA} and ${wedding.partnerB} smiling in a hot air balloon basket high above green countryside`}
             fill
             preload
             sizes="(min-width: 768px) 36vw, 100vw"
@@ -93,31 +93,31 @@ export function Hero() {
 
         <h1 className="mt-5 font-display font-light leading-[0.88] tracking-tight">
           <BlurText
-            text={wedding.fullNameA}
+            text={wedding.partnerA}
             as="span"
             trigger="load"
             animateBy="letters"
             delay={55}
             stepDuration={0.45}
-            className="whitespace-nowrap text-[clamp(2.25rem,12.25vw,6.5rem)] italic"
+            className="whitespace-nowrap text-[clamp(3.25rem,16vw,8.5rem)] italic"
           />
-          <span className="flex items-center gap-2.5 whitespace-nowrap">
+          <span className="flex items-center gap-3 whitespace-nowrap">
             <motion.span
               initial={{ opacity: 0, scale: 0.6, rotate: -12 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ delay: 0.7, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="-mb-2 font-script text-[clamp(2.5rem,13.5vw,7rem)] leading-none text-gold"
+              className="-mb-3 font-script text-[clamp(3.5rem,17vw,8rem)] leading-none text-gold"
             >
               &amp;
             </motion.span>
             <BlurText
-              text={wedding.fullNameB}
+              text={wedding.partnerB}
               as="span"
               trigger="load"
               animateBy="letters"
               delay={70}
               stepDuration={0.45}
-              className="whitespace-nowrap text-[clamp(2.25rem,12.25vw,6.5rem)] italic"
+              className="whitespace-nowrap text-[clamp(3.25rem,16vw,8.5rem)] italic"
             />
           </span>
         </h1>
@@ -152,11 +152,11 @@ export function Hero() {
             className="hidden shrink-0 min-[360px]:block"
           >
             <CircularText
-              text={`${wedding.dateShort} ✦ ${wedding.fullNameA} & ${wedding.fullNameB} ✦ `}
-              size={126}
+              text={`${wedding.dateShort} ✦ ${wedding.partnerA} & ${wedding.partnerB} ✦ `}
+              size={112}
               fontSize={11}
               fontWeight={600}
-              letterSpacing={1.5}
+              letterSpacing={2}
               spinDuration={22}
               onHover="speedUp"
               color="var(--gold-soft)"

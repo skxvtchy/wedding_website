@@ -95,8 +95,8 @@ export function PinGate({ length }: { length: number }) {
           {wedding.partnerA[0]}&amp;{wedding.partnerB[0]}
         </p>
         <h1 className="mt-3 font-display text-[2.1rem] font-light italic leading-tight">
-          <span className="block">{wedding.fullNameA}</span>
-          <span className="font-script text-gold">&amp;</span> {wedding.fullNameB}
+          <span className="block">{wedding.partnerA}</span>
+          <span className="font-script text-gold">&amp;</span> {wedding.partnerB}
         </h1>
         <p className="eyebrow mt-2 text-gold-soft/80">
           {wedding.dateShort} · {wedding.venue.city}

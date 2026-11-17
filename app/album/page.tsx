@@ -6,7 +6,7 @@ import { allPhotos } from "@/lib/allPhotos";
 import { wedding } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: `The Album · ${wedding.fullNameA} & ${wedding.fullNameB}`,
+  title: `The Album · ${wedding.partnerA} & ${wedding.partnerB}`,
   description: `${allPhotos.length} photos from ${wedding.together.since} to today.`,
 };
 
