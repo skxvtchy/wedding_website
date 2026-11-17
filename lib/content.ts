@@ -29,7 +29,7 @@ export const wedding = {
 } as const;
 
 export const images = {
-  hero: "/images/years/2025/007.jpg",
+  hero: "/images/years/2026/011.jpg",
   balloon: "/images/props/balloon-hearts.webp",
 } as const;
 

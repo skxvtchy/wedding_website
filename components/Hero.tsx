@@ -32,8 +32,9 @@ export function Hero() {
       id="top"
       className="grain relative isolate flex min-h-[100svh] overflow-hidden bg-night text-cream"
     >
-      {/* Photo: full-bleed on phones, an arched frame on larger screens */}
-      <div className="absolute inset-0 -z-10 md:inset-auto md:right-[6%] md:top-1/2 md:h-[min(78vh,46rem)] md:w-[min(36vw,34rem)] md:-translate-y-1/2">
+      {/* Photo: fills the screen below the names on phones (fading up into the
+          night sky), an arched frame on larger screens */}
+      <div className="absolute inset-x-0 bottom-0 top-[13svh] -z-10 [mask-image:linear-gradient(to_bottom,transparent,#000_22%)] md:inset-auto md:[mask-image:none] md:right-[6%] md:top-1/2 md:h-[min(78vh,46rem)] md:w-[min(36vw,34rem)] md:-translate-y-1/2">
       <motion.div style={{ y: imgY }} className="parallax h-full w-full">
         <motion.div
           initial={{ scale: 1.15, opacity: 0 }}
@@ -43,11 +44,11 @@ export function Hero() {
         >
           <Image
             src={images.hero}
-            alt={`${wedding.fullNameA} and ${wedding.fullNameB} sharing a kiss under a sky of floating lanterns`}
+            alt={`${wedding.fullNameA} and ${wedding.fullNameB} smiling in a hot air balloon basket high above green countryside`}
             fill
             preload
             sizes="(min-width: 768px) 36vw, 100vw"
-            className="object-cover object-[55%_70%]"
+            className="object-cover object-[52%_30%]"
           />
         </motion.div>
       </motion.div>
