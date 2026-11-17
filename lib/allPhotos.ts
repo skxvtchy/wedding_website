@@ -357,6 +357,12 @@ export const allPhotos: PhotoItem[] = [
     "height": 1800
   },
   {
+    "year": "2018",
+    "src": "/images/years/2018/041.jpg",
+    "width": 1013,
+    "height": 1800
+  },
+  {
     "year": "2019",
     "src": "/images/years/2019/001.jpg",
     "width": 1800,
