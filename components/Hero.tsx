@@ -44,7 +44,7 @@ export function Hero() {
         >
           <Image
             src={images.hero}
-            alt={`${wedding.partnerA} and ${wedding.partnerB} smiling in a hot air balloon basket high above green countryside`}
+            alt={`${wedding.fullNameA} and ${wedding.fullNameB} smiling in a hot air balloon basket high above green countryside`}
             fill
             preload
             sizes="(min-width: 768px) 36vw, 100vw"
@@ -152,11 +152,11 @@ export function Hero() {
             className="hidden shrink-0 min-[360px]:block"
           >
             <CircularText
-              text={`${wedding.dateShort} ✦ ${wedding.partnerA} & ${wedding.partnerB} ✦ `}
-              size={112}
+              text={`${wedding.dateShort} ✦ ${wedding.fullNameA} & ${wedding.fullNameB} ✦ `}
+              size={126}
               fontSize={11}
               fontWeight={600}
-              letterSpacing={2}
+              letterSpacing={1.5}
               spinDuration={22}
               onHover="speedUp"
               color="var(--gold-soft)"
