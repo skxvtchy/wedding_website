@@ -76,6 +76,12 @@ export const snippets: Snippet[] = [
     photos: y("2019", "009", "003", "006", "008"),
   },
   {
+    year: "2020",
+    title: "Masks on, hearts full",
+    caption: "The world hit pause. We just got closer.",
+    photos: y("2020", "003", "004", "002", "006"),
+  },
+  {
     year: "2021",
     title: "Tractor era",
     caption: "Apple picking, flannel season, and one very red tractor.",
